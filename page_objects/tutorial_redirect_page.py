@@ -14,12 +14,13 @@ class Tutorial_Redirect_Page(Base_Page,Header_Object,Footer_Object):
     "Page Object for the tutorial's redirect page"
 
     #locators
-    heading = locators.heading
+    heading = locators.form_heading
 
-    def start(self):
-        "Use this method to go to specific URL -- if needed"
-        url = 'selenium-tutorial-redirect'
-        self.open(url)
+    #def start(self):
+    #    "Use this method to go to specific URL -- if needed"
+    #    #url = ''
+    #    #self.open(url)
+    #    pass
 
     @Wrapit._exceptionHandler
     def check_heading(self):

@@ -2,36 +2,25 @@
 This class models the form on the Selenium tutorial page
 The form consists of some input fields, a dropdown, a checkbox and a button
 """
+
 import conf.locators_conf as locators
+from page_objects.Base_Page import Base_Page
 from utils.Wrapit import Wrapit
+import conf.payment_form_data as conf
 
 
-class Form_Object:
+class Form_Object():
     "Page object for the Form"
 
-    #locators
-    name_field = locators.name_field
-    email_field = locators.email_field
-    phone_no_field = locators.phone_no_field
-    click_me_button = locators.click_me_button
-    gender_dropdown = locators.gender_dropdown
-    gender_option = locators.gender_option
-    tac_checkbox = locators.tac_checkbox
-    redirect_title = "redirect"
-
-    @Wrapit._exceptionHandler
-    @Wrapit._screenshot
-    def set_name(self,name):
-        "Set the name on the form"
-        result_flag = self.set_text(self.name_field,name)
-        self.conditional_write(result_flag,
-            positive='Set the name to: %s'%name,
-            negative='Failed to set the name in the form',
-            level='debug')
-
-        return result_flag
-
-
+    #locators 
+    email_field = locators.e_mail_field
+    card_num_field = locators.card_num_field
+    expiry_date_field = locators.expiry_date_field
+    ccv_no_field = locators.ccv_no_field
+    zipcode_field = locators.zipcode_field
+    payment_button = locators.payment_button
+        
+        
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
     def set_email(self,email):
@@ -47,12 +36,38 @@ class Form_Object:
 
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
-    def set_phone(self,phone):
-        "Set the phone on the form"
-        result_flag = self.set_text(self.phone_no_field,phone)
+    def set_card_no(self,card_no):
+        for card_num in card_no:
+            "Set the card number on the form"
+            result_flag = self.set_text(self.card_num_field,card_num)
+            self.conditional_write(result_flag,
+                positive='Set the card number to: %s'%card_no,
+                negative='Failed to set the card number in the form',
+                level='debug')
+
+            return result_flag
+
+
+    @Wrapit._exceptionHandler
+    @Wrapit._screenshot
+    def set_expiry(self,expiry_date):
+        "Set the expiry date on the form"
+        result_flag = self.set_text(self.expiry_date_field,expiry_date)
         self.conditional_write(result_flag,
-            positive='Set the phone to: %s'%phone,
-            negative='Failed to set the phone in the form',
+            positive='Set the expiry date to: %s'%expiry_date,
+            negative='Failed to set the expiry date in the form',
+            level='debug')
+
+        return result_flag
+    
+    @Wrapit._exceptionHandler
+    @Wrapit._screenshot
+    def set_ccv(self,ccv):
+        "Set the ccv on the form"
+        result_flag = self.set_text(self.ccv_no_field,ccv)
+        self.conditional_write(result_flag,
+            positive='Set the ccv to: %s'%ccv,
+            negative='Failed to set the ccv in the form',
             level='debug')
 
         return result_flag
@@ -60,14 +75,12 @@ class Form_Object:
 
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
-    def set_gender(self,gender,wait_seconds=1):
-        "Set the gender on the form"
-        result_flag = self.click_element(self.gender_dropdown)
-        self.wait(wait_seconds)
-        result_flag &= self.click_element(self.gender_option%gender)
+    def set_zipcode(self,zcode):
+        "Set the zipcode on the form"
+        result_flag = self.set_text(self.zipcode_field,zcode)
         self.conditional_write(result_flag,
-            positive='Set the gender to: %s'%gender,
-            negative='Failed to set the gender in the form',
+            positive='Set the zipcode to: %s'%zcode,
+            negative='Failed to set the zipcode in the form',
             level='debug')
 
         return result_flag
@@ -75,12 +88,12 @@ class Form_Object:
 
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
-    def click_me(self):
-        "Click on 'Click Me' button"
-        result_flag = self.click_element(self.click_me_button)
+    def click_pay(self):
+        "Click on 'Pay' button"
+        result_flag = self.click_element(self.payment_button)
         self.conditional_write(result_flag,
-            positive='Clicked on the "click me" button',
-            negative='Failed to click on "click me" button',
+            positive='Clicked on the "Pay" button',
+            negative='Failed to click on "Pay" button',
             level='debug')
 
         return result_flag
@@ -88,41 +101,17 @@ class Form_Object:
 
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
-    def accept_terms(self):
-        "Accept the terms and conditions"
-        result_flag = self.select_checkbox(self.tac_checkbox)
-        self.conditional_write(result_flag,
-            positive='Accepted the terms and conditions',
-            negative='Failed to accept the terms and conditions',
-            level='debug')
-
-        return result_flag
-
-
-    @Wrapit._exceptionHandler
-    @Wrapit._screenshot
-    def check_redirect(self):
-        "Check if we have been redirected to the redirect page"
-        result_flag = False
-        if self.redirect_title in self.driver.title:
-            result_flag = True
-            self.switch_page("redirect")
-
-        return result_flag
-
-
-    @Wrapit._exceptionHandler
-    @Wrapit._screenshot
-    def submit_form(self,username,email,phone,gender):
+    def start(self,email,card_num,exipiry_date,ccv,zcode):
         "Submit the form"
-        result_flag = self.set_name(username)
-        result_flag &= self.set_email(email)
-        result_flag &= self.set_phone(phone)
-        result_flag &= self.set_gender(gender)
-        result_flag &= self.accept_terms()
-        result_flag &= self.click_me()
-        result_flag &= self.check_redirect()
+        result_flag = self.set_email(email)
+        result_flag &= self.set_card_no(card_num)
+        result_flag &= self.set_expiry(exipiry_date)
+        result_flag &= self.set_ccv(ccv)
+        result_flag &= self.set_zipcode(zcode)
+        result_flag &= self.click_pay()
 
         return result_flag
+    
+    
 
 
