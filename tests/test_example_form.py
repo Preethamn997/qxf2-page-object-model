@@ -96,7 +96,7 @@ def test_weather_shopper(test_obj):
                             level="critical")
         
         PageFactory.get_page_object("payment confirmation", base_url=test_obj.base_url)
-                
+               
          # Turn on the highlighting feature
         test_obj.turn_on_highlight()
 
@@ -113,6 +113,7 @@ def test_weather_shopper(test_obj):
 
 
     assert expected_pass == actual_pass, "Test failed: %s"%__file__
+    PageFactory.get_page_object("payment confirmation", base_url=test_obj.base_url)
 
 
 #---START OF SCRIPT
