@@ -497,9 +497,11 @@ class Base_Page(Borg,unittest.TestCase):
         return result_flag
 
 
+
     def set_text(self,locator,value,clear_flag=True):
         "Set the value of the text field"
         text_field = None
+        
         try:
             text_field = self.get_element(locator)
             if text_field is not None and clear_flag is True:
@@ -513,6 +515,7 @@ class Base_Page(Borg,unittest.TestCase):
 
         result_flag = False
         if text_field is not None:
+            #text_field.clear()
             try:
                 text_field.send_keys(value)
                 result_flag = True
@@ -523,6 +526,28 @@ class Base_Page(Borg,unittest.TestCase):
 
         return result_flag
 
+
+    def set_text_list(self,locator,value,clear_flag=True):
+        "Set the value of the text field"
+        text_field = None
+        
+        try:
+            text_field = self.get_element(locator)
+        except Exception as e:
+            self.write("Check your locator-'%s,%s' in the conf/locators.conf file" %(locator[0],locator[1]))
+
+        result_flag = False
+        if text_field is not None:
+            try:
+                for val in value:
+                    text_field.send_keys(val)
+                result_flag = True
+            except Exception as e:
+                self.write('Could not write to text field: %s'%locator,'debug')
+                self.write(str(e),'debug')
+                self.exceptions.append("Could not write to text field- '%s' in the conf/locators.conf file"%locator)
+
+        return result_flag
 
     def get_text(self,locator):
         "Return the text for a given path or the 'None' object if the element is not found"

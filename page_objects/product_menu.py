@@ -25,7 +25,7 @@ class Product_Menu(Base_Page):
             if price_value:
                 prices.append(int(price_value[0]))        
         lowest_prices = sorted(prices)[:2]
-        print("lowest_prices", lowest_prices)
+       # print("lowest_prices", lowest_prices)
         self.add_to_cart_lowest_price_product(prices, lowest_prices,add_button)
                 
     def add_to_cart_lowest_price_product(self, prices, lowest_prices, add_button):

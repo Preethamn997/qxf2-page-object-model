@@ -35,6 +35,8 @@ expiry_date_field = "xpath,//input[@id='cc-exp']"
 ccv_no_field = "xpath,//input[@id='cc-csc']"
 zipcode_field = "xpath,//input[@id='billing-zip']"
 payment_button = "xpath,//button[@id='submitButton']"
+check_payment_status= "xpath,//*[@class='row justify-content-center']//h2"
+
 #Locators for the footer object(footer_object.py)
 
 footer_menu = "xpath,//ul[contains(@class,'nav-justified')]/descendant::a[text()='%s']"

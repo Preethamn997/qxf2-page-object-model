@@ -3,10 +3,9 @@ This class models the form on the Selenium tutorial page
 The form consists of some input fields, a dropdown, a checkbox and a button
 """
 
+
 import conf.locators_conf as locators
-from page_objects.Base_Page import Base_Page
 from utils.Wrapit import Wrapit
-import conf.payment_form_data as conf
 
 
 class Form_Object():
@@ -37,28 +36,30 @@ class Form_Object():
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
     def set_card_no(self,card_no):
-        for card_num in card_no:
-            "Set the card number on the form"
-            result_flag = self.set_text(self.card_num_field,card_num)
-            self.conditional_write(result_flag,
-                positive='Set the card number to: %s'%card_no,
-                negative='Failed to set the card number in the form',
-                level='debug')
+        "Set the card number on the form"
+        #for card_num in card_no:    
+        result_flag = self.set_text_list(self.card_num_field,card_no)
+        self.conditional_write(result_flag,
+            positive='Set the card number to: %s'%card_no,
+            negative='Failed to set the card number in the form',
+            level='debug')
 
-            return result_flag
+        return result_flag
 
 
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
-    def set_expiry(self,expiry_date):
+    def set_expiry(self,expiry_date):   
         "Set the expiry date on the form"
-        result_flag = self.set_text(self.expiry_date_field,expiry_date)
+        #for date in expiry_date:
+        result_flag = self.set_text_list(self.expiry_date_field, expiry_date)
         self.conditional_write(result_flag,
             positive='Set the expiry date to: %s'%expiry_date,
             negative='Failed to set the expiry date in the form',
             level='debug')
 
         return result_flag
+    
     
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
@@ -101,10 +102,10 @@ class Form_Object():
 
     @Wrapit._exceptionHandler
     @Wrapit._screenshot
-    def start(self,email,card_num,exipiry_date,ccv,zcode):
+    def submit_form(self,email,card_no,exipiry_date,ccv,zcode):
         "Submit the form"
         result_flag = self.set_email(email)
-        result_flag &= self.set_card_no(card_num)
+        result_flag &= self.set_card_no(card_no)
         result_flag &= self.set_expiry(exipiry_date)
         result_flag &= self.set_ccv(ccv)
         result_flag &= self.set_zipcode(zcode)
