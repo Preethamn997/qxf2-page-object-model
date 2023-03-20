@@ -22,7 +22,7 @@ from email.mime.base import MIMEBase
 import mimetypes
 from email import encoders
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import conf.email_conf as conf_file
+
 
 
 class Email_Pytest_Report:

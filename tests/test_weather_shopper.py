@@ -95,7 +95,6 @@ def test_weather_shopper(test_obj):
                             negative="Failed to submit the form \nOn url: %s"%test_obj.get_current_url(),
                             level="critical")
         
-        PageFactory.get_page_object("payment confirmation", base_url=test_obj.base_url)
                
          # Turn on the highlighting feature
         test_obj.turn_on_highlight()
@@ -149,4 +148,4 @@ if __name__=='__main__':
         test_obj.teardown()
     else:
         print('ERROR: Received incorrect comand line input arguments')
-        print(option_obj.print_usage())
+        print(options_obj.print_usage())

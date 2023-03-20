@@ -12,7 +12,7 @@ from utils.Wrapit import Wrapit
 
 
 class Tutorial_Main_Page(Base_Page,Form_Object):
-    "Page Object for the tutorial's main page"
+    "Page Object for the weather shopper home page"
     temperature = locators.temperature
     moisturizer = locators.buy_moisture_btn
     sunscreen = locators.buy_sunscreen_btn
@@ -22,13 +22,11 @@ class Tutorial_Main_Page(Base_Page,Form_Object):
         
         url = '/'
         self.open(url)
-        print("Before Method")
      
     @Wrapit._exceptionHandler   
     def read_temperature(self):
         # Call the _get_text method of the base class to get the text of the temperature web element
         temp = self.get_text(self.temperature)
-        print("After method")
         current_temperature = int(temp.strip().split()[0])
         return current_temperature
         
@@ -36,10 +34,8 @@ class Tutorial_Main_Page(Base_Page,Form_Object):
     def select_category(self, current_temperature):    
         if current_temperature < 30:
             page_name = "Moisturizer Page"
-            print(page_name)
         else:
             page_name = "Sunscreen Page"
-            print(page_name)
         
         return page_name
             

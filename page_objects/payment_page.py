@@ -10,17 +10,14 @@ class Payment_Page(Base_Page):
         self.click_element(self.pay_with_card_locator)
         self.switch_to_payment_form()
     
-    def switch_to_payment_form(self):
+    #def switch_to_payment_form(self):
         #self.switch_frame(name=self.payment_form_locator)
-        self.switch_frame(name="stripe_checkout_app")
+     #   self.switch_frame(name="stripe_checkout_app")
         
     def switch_to_payment_form(self):
         try:
+    
+            self.switch_frame(name="stripe_checkout_app")
             
-            # Check that the payment form is visible or interactable
-            payment_form = self.switch_frame(name="stripe_checkout_app")
-            #assert payment_form.is_displayed() or payment_form.is_enabled()
-            #print("Switched to payment form iframe successfully")
-            print(payment_form)
         except Exception as e:
             print("Failed to switch to payment form iframe:", str(e))
