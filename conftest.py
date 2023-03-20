@@ -3,7 +3,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from page_objects.PageFactory import PageFactory
 from conf import browser_os_name_conf
 from conf import base_url_conf
-from conf import report_portal_conf
 from utils import post_test_reports_to_slack
 from utils import Tesults
 from utils import interactive_mode
@@ -394,26 +393,6 @@ def reportportal_service(request):
     return reportportal_pytest_service
 
 
-@pytest.hookimpl()
-def pytest_configure(config):
-    "Sets the launch name based on the marker selected."
-    global if_reportportal
-    if_reportportal =config.getoption('--reportportal')
-
-    try:
-        config._inicache["rp_uuid"] = report_portal_conf.report_portal_uuid
-        config._inicache["rp_endpoint"]= report_portal_conf.report_portal_endpoint
-        config._inicache["rp_project"]=report_portal_conf.report_portal_project
-        config._inicache["rp_launch"]=report_portal_conf.report_portal_launch
-
-    except Exception as e:
-        print("Exception when trying to run test: %s"%__file__)
-        print("Python says:%s"%str(e))
-
-    #Registering custom markers to supress warnings
-    config.addinivalue_line("markers", "GUI: mark a test as part of the GUI regression suite.")
-    config.addinivalue_line("markers", "API: mark a test as part of the GUI regression suite.")
-    config.addinivalue_line("markers", "MOBILE: mark a test as part of the GUI regression suite.")
 
 def pytest_terminal_summary(terminalreporter, exitstatus):
     "add additional section in terminal summary reporting."
