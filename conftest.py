@@ -3,14 +3,10 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from page_objects.PageFactory import PageFactory
 from conf import browser_os_name_conf
 from conf import base_url_conf
-from conf import api_example_conf
-from conf import report_portal_conf
 from utils import post_test_reports_to_slack
-from utils.email_pytest_report import Email_Pytest_Report
-from endpoints.API_Player import API_Player
 from utils import Tesults
 from utils import interactive_mode
-import argparse
+
 
 @pytest.fixture
 def test_obj(base_url,browser,browser_version,os_version,os_name,remote_flag,testrail_flag,tesults_flag,test_run_id,remote_project_name,remote_build_name,testname,reportportal_service,interactivemode_flag):
@@ -88,20 +84,7 @@ def test_mobile_obj(mobile_os_name, mobile_os_version, device_name, app_package,
         print("Exception when trying to run test: %s"%__file__)
         print("Python says:%s"%str(e))
 
-@pytest.fixture
-def test_api_obj(interactivemode_flag,api_url=api_example_conf.api_url):
-    "Return an instance of Base Page that knows about the third party integrations"
-    try:
-        if interactivemode_flag.lower()=='y':
-            api_url,session_flag = interactive_mode.ask_questions_api(api_url)
-            test_api_obj = API_Player(api_url, session_flag)
-        else:
-            test_api_obj = API_Player(url=api_url, session_flag=True)
-        yield test_api_obj
 
-    except Exception as e:
-        print("Exception when trying to run test:%s" % __file__)
-        print("Python says:%s" % str(e))
 
 @pytest.fixture
 def testname(request):
@@ -410,26 +393,6 @@ def reportportal_service(request):
     return reportportal_pytest_service
 
 
-@pytest.hookimpl()
-def pytest_configure(config):
-    "Sets the launch name based on the marker selected."
-    global if_reportportal
-    if_reportportal =config.getoption('--reportportal')
-
-    try:
-        config._inicache["rp_uuid"] = report_portal_conf.report_portal_uuid
-        config._inicache["rp_endpoint"]= report_portal_conf.report_portal_endpoint
-        config._inicache["rp_project"]=report_portal_conf.report_portal_project
-        config._inicache["rp_launch"]=report_portal_conf.report_portal_launch
-
-    except Exception as e:
-        print("Exception when trying to run test: %s"%__file__)
-        print("Python says:%s"%str(e))
-
-    #Registering custom markers to supress warnings
-    config.addinivalue_line("markers", "GUI: mark a test as part of the GUI regression suite.")
-    config.addinivalue_line("markers", "API: mark a test as part of the GUI regression suite.")
-    config.addinivalue_line("markers", "MOBILE: mark a test as part of the GUI regression suite.")
 
 def pytest_terminal_summary(terminalreporter, exitstatus):
     "add additional section in terminal summary reporting."
@@ -437,11 +400,6 @@ def pytest_terminal_summary(terminalreporter, exitstatus):
         if not hasattr(terminalreporter.config, 'workerinput'):
             if  terminalreporter.config.getoption("--slack_flag").lower() == 'y':
                 post_test_reports_to_slack.post_reports_to_slack()
-            if terminalreporter.config.getoption("--email_pytest_report").lower() == 'y':
-                #Initialize the Email_Pytest_Report object
-                email_obj = Email_Pytest_Report()
-                # Send html formatted email body message with pytest report as an attachment
-                email_obj.send_test_report_email(html_body_flag=True,attachment_flag=True,report_file_path='default')
             if terminalreporter.config.getoption("--tesults").lower() == 'y':
                 Tesults.post_results_to_tesults()
 

@@ -18,6 +18,7 @@ import conf.remote_credentials
 import conf.base_url_conf
 import conf.screenshot_conf
 from utils import Gif_Maker
+from selenium.webdriver.common.by import By
 
 class Borg:
     #The borg design pattern is to share state
@@ -382,7 +383,7 @@ class Base_Page(Borg,unittest.TestCase):
             if name is not None:
                 self.driver.switch_to.frame(name)
             elif index is not None:
-                self.driver.switch_to.frame(driver.find_elements(By.TAG_NAME,("iframe")[index]))
+                self.driver.switch_to.frame(self.driver.find_elements(By.TAG_NAME,("iframe")[index]))
             result_flag = True
 
         except Exception as e:
@@ -392,13 +393,13 @@ class Base_Page(Borg,unittest.TestCase):
 
         return result_flag
 
-    def _get_locator(key):
+    def _get_locator(self, key):
         "fetches locator from the locator conf"
         value = None
         try:
             path_conf_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'conf', 'locators.conf'))
             if path_conf_file is not None:
-                value = Conf_Reader.get_value(path_conf_file, key)
+                value = self.Conf_Reader.get_value(path_conf_file, key)
         except Exception as e:
             print (str(e))
             self.exceptions.append("Error when fetching locator from the locator.conf")
@@ -497,9 +498,11 @@ class Base_Page(Borg,unittest.TestCase):
         return result_flag
 
 
+
     def set_text(self,locator,value,clear_flag=True):
         "Set the value of the text field"
         text_field = None
+        
         try:
             text_field = self.get_element(locator)
             if text_field is not None and clear_flag is True:
@@ -513,6 +516,7 @@ class Base_Page(Borg,unittest.TestCase):
 
         result_flag = False
         if text_field is not None:
+            #text_field.clear()
             try:
                 text_field.send_keys(value)
                 result_flag = True
@@ -523,6 +527,28 @@ class Base_Page(Borg,unittest.TestCase):
 
         return result_flag
 
+
+    def set_text_list(self,locator,value,clear_flag=True):
+        "Set the value of the text field"
+        text_field = None
+        
+        try:
+            text_field = self.get_element(locator)
+        except Exception as e:
+            self.write("Check your locator-'%s,%s' in the conf/locators.conf file" %(locator[0],locator[1]))
+
+        result_flag = False
+        if text_field is not None:
+            try:
+                for val in value:
+                    text_field.send_keys(val)
+                result_flag = True
+            except Exception as e:
+                self.write('Could not write to text field: %s'%locator,'debug')
+                self.write(str(e),'debug')
+                self.exceptions.append("Could not write to text field- '%s' in the conf/locators.conf file"%locator)
+
+        return result_flag
 
     def get_text(self,locator):
         "Return the text for a given path or the 'None' object if the element is not found"
@@ -545,7 +571,7 @@ class Base_Page(Borg,unittest.TestCase):
             text = text.encode('utf-8')
         except Exception as e:
             self.write(e)
-            self.exceptions.append("Error when getting text from the DOM element-'%s' in the conf/locators.conf file"%locator)
+            self.exceptions.append("Error when getting text from the DOM element-'%s' in the conf/locators.conf file"%self.locator)
 
         return text
 
@@ -729,21 +755,6 @@ class Base_Page(Borg,unittest.TestCase):
             self.smart_wait(locator,wait_seconds=wait_seconds)
         else:
             time.sleep(wait_seconds)
-
-
-    def smart_wait(self,locator,wait_seconds=5):
-        "Performs an explicit wait for a particular element"
-        result_flag = False
-        try:
-            path = self.split_locator(locator)
-            WebDriverWait(self.driver, wait_seconds).until(EC.presence_of_element_located(path))
-            result_flag =True
-        except Exception:
-	        self.conditional_write(result_flag,
-                    positive='Located the element: %s'%locator,
-                    negative='Could not locate the element %s even after %.1f seconds'%(locator,wait_seconds))
-
-        return result_flag
 
 
     def success(self,msg,level='info',pre_format='PASS: '):
