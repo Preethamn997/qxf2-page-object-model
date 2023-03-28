@@ -39,6 +39,10 @@ class Product_Menu(Base_Page):
                     print("Clicked on add button for price:", price)
             except Exception as e:
                 print("Error clicking add button:", str(e))
+        self.nav_to_cart()
+    
+    def nav_to_cart(self):
+        self.click_element(self.cart_button_locator)    
 
         
         
