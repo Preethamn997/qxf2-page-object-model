@@ -11,7 +11,6 @@ Pages implemented so far:
 """
 
 from page_objects.moisturizer_page import MoisturizerPage
-from page_objects.nav_to_cart import Cart
 from page_objects.payment_page import Payment_Page
 from page_objects.sunscreen_page import SunscreenPage
 from page_objects.zero_page import Zero_Page
@@ -37,8 +36,6 @@ class PageFactory():
             test_obj = SunscreenPage(base_url=base_url)    
         elif page_name == "product menu page":
             test_obj = Product_Menu(base_url=base_url)
-        elif page_name == "cart":
-            test_obj = Cart(base_url=base_url)
         elif page_name == "payment page":
             test_obj = Payment_Page(base_url=base_url)
         elif page_name == "payment confirmation":
